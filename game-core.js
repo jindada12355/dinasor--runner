@@ -88,6 +88,26 @@
     return dino;
   };
 
+  GameCore.dinoRect = function (dino) {
+    return { x: dino.x, y: dino.y, width: CONSTANTS.DINO_W, height: dino.height };
+  };
+
+  GameCore.aabbOverlap = function (a, b) {
+    return (
+      a.x < b.x + b.width &&
+      a.x + a.width > b.x &&
+      a.y < b.y + b.height &&
+      a.y + a.height > b.y
+    );
+  };
+
+  GameCore.collides = function (state) {
+    const dino = GameCore.dinoRect(state.dino);
+    return state.obstacles.some(function (o) {
+      return GameCore.aabbOverlap(dino, { x: o.x, y: o.y, width: o.width, height: o.height });
+    });
+  };
+
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = GameCore;
   } else {
