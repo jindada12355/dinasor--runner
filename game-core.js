@@ -165,6 +165,22 @@
     state.score = Math.floor(state.distance / CONSTANTS.SCORE_DIVISOR);
   };
 
+  GameCore.step = function (state, input, rng) {
+    if (state.gameOver) return state;
+
+    GameCore.updateDino(state, input);
+    state.obstacles = GameCore.updateObstacles(state.obstacles, state.speed);
+    state.obstacles = GameCore.maybeSpawnObstacle(state, rng);
+    GameCore.updateDifficulty(state);
+    GameCore.updateScore(state);
+
+    if (GameCore.collides(state)) {
+      state.gameOver = true;
+    }
+
+    return state;
+  };
+
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = GameCore;
   } else {
