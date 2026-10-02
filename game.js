@@ -19,6 +19,21 @@
   let state = GameCore.createInitialState();
   let highScore = loadHighScore();
   let input = { jump: false, duck: false };
+  let scrollX = 0; // 累计滚动距离，用于背景视差
+
+  // 远景星星（视差层），加载时生成一次
+  const stars = [];
+  (function initStars() {
+    for (let i = 0; i < 70; i++) {
+      const depth = Math.random();
+      stars.push({
+        x: Math.random() * C.WIDTH,
+        y: Math.random() * (C.GROUND_Y - 40),
+        depth: depth,
+        r: depth > 0.65 ? 1.5 : 1,
+      });
+    }
+  })();
 
   function loadHighScore() {
     try { return parseInt(localStorage.getItem('dino-highscore'), 10) || 0; }
@@ -32,6 +47,7 @@
   function restart() {
     state = GameCore.createInitialState();
     input = { jump: false, duck: false };
+    scrollX = 0;
   }
 
   function onKeyDown(e) {
@@ -79,7 +95,7 @@
     ctx.strokeStyle = PALETTE.grid;
     ctx.lineWidth = 1;
     const spacing = 60;
-    const offset = (state.distance * state.speed) % spacing;
+    const offset = scrollX % spacing;
     for (let x = -offset; x < C.WIDTH; x += spacing) {
       ctx.beginPath();
       ctx.moveTo(x, 0);
@@ -94,6 +110,36 @@
       ctx.moveTo(0, C.GROUND_Y);
       ctx.lineTo(C.WIDTH, C.GROUND_Y);
     }, PALETTE.ground, null);
+  }
+
+  function drawStars() {
+    ctx.save();
+    for (let i = 0; i < stars.length; i++) {
+      const s = stars[i];
+      const factor = 0.1 + s.depth * 0.3; // 视差：越深越慢（0.1x~0.4x）
+      const x = ((s.x - scrollX * factor) % C.WIDTH + C.WIDTH) % C.WIDTH;
+      ctx.fillStyle = 'rgba(0, 229, 255, ' + (0.15 + s.depth * 0.35).toFixed(2) + ')';
+      ctx.fillRect(x, s.y, s.r, s.r);
+    }
+    ctx.restore();
+  }
+
+  function drawGroundDashes() {
+    ctx.save();
+    ctx.strokeStyle = 'rgba(0, 229, 255, 0.45)';
+    ctx.lineWidth = 2;
+    const dashLen = 24;
+    const gap = 24;
+    const period = dashLen + gap;
+    const offset = scrollX % period;
+    const y = C.GROUND_Y + 12;
+    for (let x = -offset; x < C.WIDTH; x += period) {
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x + dashLen, y);
+      ctx.stroke();
+    }
+    ctx.restore();
   }
 
   function traceDinoStanding(w, h) {
@@ -206,8 +252,10 @@
 
   function render() {
     drawBackground();
+    drawStars();
     drawGrid();
     drawGround();
+    drawGroundDashes();
     drawDino();
     for (let i = 0; i < state.obstacles.length; i++) drawObstacle(state.obstacles[i]);
     drawScore();
@@ -226,6 +274,7 @@
 
     while (accumulator >= STEP_MS) {
       state = GameCore.step(state, input, Math.random);
+      scrollX += state.speed; // 累计滚动，驱动背景视差
       input.jump = false; // 跳跃是边沿触发，消费掉本帧的跳跃请求
       accumulator -= STEP_MS;
     }
