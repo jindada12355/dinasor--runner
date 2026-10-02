@@ -34,3 +34,26 @@ test('step：gameOver 后不再更新', () => {
   GameCore.step(s, { jump: false, duck: false }, () => 0.9);
   assert.equal(s.distance, dist);
 });
+
+test('step：会生成障碍物并写回状态', () => {
+  const s = GameCore.createInitialState();
+  s.spawnTimer = 1;
+  GameCore.step(s, { jump: false, duck: false }, () => 0.1);
+  assert.equal(s.obstacles.length, 1);
+  assert.equal(s.obstacles[0].type, 'cactus');
+  assert.equal(s.obstacles[0].x, C.WIDTH);
+});
+
+test('step：障碍物随帧向左移动（数组写回）', () => {
+  const s = GameCore.createInitialState();
+  s.obstacles = [{
+    type: 'cactus',
+    x: 500,
+    y: C.GROUND_Y - C.CACTUS_H,
+    width: C.CACTUS_W,
+    height: C.CACTUS_H,
+  }];
+  s.spawnTimer = 9999;
+  GameCore.step(s, { jump: false, duck: false }, () => 0.1);
+  assert.equal(s.obstacles[0].x, 500 - C.BASE_SPEED);
+});
