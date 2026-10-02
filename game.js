@@ -274,7 +274,7 @@
 
     while (accumulator >= STEP_MS) {
       state = GameCore.step(state, input, Math.random);
-      scrollX += state.speed; // 累计滚动，驱动背景视差
+      if (!state.gameOver) scrollX += state.speed; // 死亡后背景冻结
       input.jump = false; // 跳跃是边沿触发，消费掉本帧的跳跃请求
       accumulator -= STEP_MS;
     }
