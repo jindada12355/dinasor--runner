@@ -108,6 +108,63 @@
     });
   };
 
+  GameCore.updateObstacles = function (obstacles, speed) {
+    return obstacles
+      .map(function (o) { return Object.assign({}, o, { x: o.x - speed }); })
+      .filter(function (o) { return o.x + o.width > 0; });
+  };
+
+  GameCore.maybeSpawnObstacle = function (state, rng) {
+    state.spawnTimer -= 1;
+    if (state.spawnTimer > 0) return state.obstacles;
+
+    const roll = rng();
+    let obstacle;
+    if (roll < 0.5) {
+      obstacle = {
+        type: 'cactus',
+        x: CONSTANTS.WIDTH,
+        y: CONSTANTS.GROUND_Y - CONSTANTS.CACTUS_H,
+        width: CONSTANTS.CACTUS_W,
+        height: CONSTANTS.CACTUS_H,
+      };
+    } else if (roll < 0.8) {
+      obstacle = {
+        type: 'bird-low',
+        x: CONSTANTS.WIDTH,
+        y: CONSTANTS.BIRD_LOW_BOTTOM - CONSTANTS.BIRD_H,
+        width: CONSTANTS.BIRD_W,
+        height: CONSTANTS.BIRD_H,
+      };
+    } else {
+      obstacle = {
+        type: 'bird-high',
+        x: CONSTANTS.WIDTH,
+        y: CONSTANTS.BIRD_HIGH_BOTTOM - CONSTANTS.BIRD_H,
+        width: CONSTANTS.BIRD_W,
+        height: CONSTANTS.BIRD_H,
+      };
+    }
+
+    const gapScale = Math.max(0.5, 1 - state.distance / 20000);
+    const span = (CONSTANTS.MAX_SPAWN_GAP - CONSTANTS.MIN_SPAWN_GAP) * gapScale;
+    state.spawnTimer = Math.floor(CONSTANTS.MIN_SPAWN_GAP + rng() * span);
+
+    return state.obstacles.concat([obstacle]);
+  };
+
+  GameCore.updateDifficulty = function (state) {
+    state.speed = Math.min(
+      CONSTANTS.BASE_SPEED + CONSTANTS.SPEED_RAMP * state.distance,
+      CONSTANTS.MAX_SPEED
+    );
+  };
+
+  GameCore.updateScore = function (state) {
+    state.distance += 1;
+    state.score = Math.floor(state.distance / CONSTANTS.SCORE_DIVISOR);
+  };
+
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = GameCore;
   } else {
