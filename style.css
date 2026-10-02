@@ -1,0 +1,35 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: #05060f;
+  color: #00e5ff;
+  font-family: "Courier New", monospace;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.stage { text-align: center; }
+
+.title {
+  font-size: 26px;
+  letter-spacing: 6px;
+  margin-bottom: 16px;
+  text-shadow: 0 0 12px #00e5ff;
+}
+
+canvas {
+  display: block;
+  max-width: 90vw;
+  height: auto;
+  border: 1px solid rgba(0, 229, 255, 0.4);
+  box-shadow: 0 0 30px rgba(0, 229, 255, 0.25);
+  background: #0d0f2b;
+}
+
+.hint {
+  margin-top: 14px;
+  font-size: 14px;
+  color: rgba(0, 229, 255, 0.7);
+}
