@@ -38,3 +38,20 @@ test('空中下蹲会加速下落', () => {
   GameCore.updateDino(s, { jump: false, duck: true });
   assert.ok(s.dino.vy > vyBefore);
 });
+
+test('下蹲状态下起跳会离开地面', () => {
+  const s = fresh();
+  GameCore.updateDino(s, { jump: false, duck: true }); // 先蹲下
+  GameCore.updateDino(s, { jump: true, duck: false }); // 起跳
+  assert.equal(s.dino.onGround, false);
+  assert.equal(s.dino.height, C.DINO_H_STAND);
+  assert.ok(s.dino.vy < 0);
+});
+
+test('起跳帧忽略下蹲，不削弱跳跃', () => {
+  const s = fresh();
+  GameCore.updateDino(s, { jump: false, duck: true }); // 蹲下
+  GameCore.updateDino(s, { jump: true, duck: true });  // 蹲着按跳
+  assert.equal(s.dino.onGround, false);
+  assert.equal(s.dino.vy, C.JUMP_VY + C.GRAVITY);
+});

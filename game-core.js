@@ -52,20 +52,24 @@
     const dino = state.dino;
 
     // 1. 起跳（仅在地面）
-    if (dino.onGround && input.jump) {
+    const jumped = dino.onGround && input.jump;
+    if (jumped) {
       dino.vy = CONSTANTS.JUMP_VY;
       dino.onGround = false;
       dino.ducking = false;
       dino.height = CONSTANTS.DINO_H_STAND;
+      dino.y = CONSTANTS.GROUND_Y - dino.height; // 站起时保持脚着地
     }
 
-    // 2. 下蹲（地面切换姿势 / 空中加速下落）
-    if (dino.onGround) {
-      dino.ducking = !!input.duck;
-      dino.height = dino.ducking ? CONSTANTS.DINO_H_DUCK : CONSTANTS.DINO_H_STAND;
-      dino.y = CONSTANTS.GROUND_Y - dino.height;
-    } else if (input.duck) {
-      dino.vy += CONSTANTS.FALL_BOOST_VY;
+    // 2. 下蹲（地面切换姿势 / 空中加速下落）；起跳帧跳过，保证跳/蹲互斥
+    if (!jumped) {
+      if (dino.onGround) {
+        dino.ducking = !!input.duck;
+        dino.height = dino.ducking ? CONSTANTS.DINO_H_DUCK : CONSTANTS.DINO_H_STAND;
+        dino.y = CONSTANTS.GROUND_Y - dino.height;
+      } else if (input.duck) {
+        dino.vy += CONSTANTS.FALL_BOOST_VY;
+      }
     }
 
     // 3. 重力与位移（仅空中）
