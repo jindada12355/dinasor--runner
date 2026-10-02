@@ -43,3 +43,38 @@ test('collides：无障碍物时返回 false', () => {
   const s = GameCore.createInitialState();
   assert.equal(GameCore.collides(s), false);
 });
+
+test('dinoRect：站立命中框是贴合模型的缩小框', () => {
+  const s = GameCore.createInitialState();
+  const r = GameCore.dinoRect(s.dino);
+  assert.equal(r.x, C.DINO_X + C.DINO_HITBOX_STAND.dx);
+  assert.equal(r.y, C.GROUND_Y - C.DINO_H_STAND + C.DINO_HITBOX_STAND.dy);
+  assert.equal(r.width, C.DINO_HITBOX_STAND.w);
+  assert.equal(r.height, C.DINO_HITBOX_STAND.h);
+});
+
+test('dinoRect：下蹲命中框更矮', () => {
+  const s = GameCore.createInitialState();
+  GameCore.updateDino(s, { jump: false, duck: true });
+  const r = GameCore.dinoRect(s.dino);
+  assert.equal(r.height, C.DINO_HITBOX_DUCK.h);
+  assert.ok(C.DINO_HITBOX_DUCK.h < C.DINO_HITBOX_STAND.h);
+});
+
+test('collides：站立撞低飞翼龙，下蹲躲过', () => {
+  const birdLow = {
+    type: 'bird-low',
+    x: C.DINO_X,
+    y: C.BIRD_LOW_BOTTOM - C.BIRD_H,
+    width: C.BIRD_W,
+    height: C.BIRD_H,
+  };
+  const standing = GameCore.createInitialState();
+  standing.obstacles = [birdLow];
+  assert.equal(GameCore.collides(standing), true);
+
+  const ducking = GameCore.createInitialState();
+  GameCore.updateDino(ducking, { jump: false, duck: true });
+  ducking.obstacles = [birdLow];
+  assert.equal(GameCore.collides(ducking), false);
+});

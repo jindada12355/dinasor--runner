@@ -9,6 +9,8 @@
     DINO_W: 50,
     DINO_H_STAND: 50,
     DINO_H_DUCK: 30,
+    DINO_HITBOX_STAND: { dx: 6, dy: 6, w: 38, h: 28 },
+    DINO_HITBOX_DUCK: { dx: 6, dy: 8, w: 38, h: 16 },
     GRAVITY: 0.7,
     JUMP_VY: -13,
     FALL_BOOST_VY: 1.2,
@@ -89,7 +91,13 @@
   };
 
   GameCore.dinoRect = function (dino) {
-    return { x: dino.x, y: dino.y, width: CONSTANTS.DINO_W, height: dino.height };
+    const hb = dino.ducking ? CONSTANTS.DINO_HITBOX_DUCK : CONSTANTS.DINO_HITBOX_STAND;
+    return {
+      x: dino.x + hb.dx,
+      y: dino.y + hb.dy,
+      width: hb.w,
+      height: hb.h,
+    };
   };
 
   GameCore.aabbOverlap = function (a, b) {
