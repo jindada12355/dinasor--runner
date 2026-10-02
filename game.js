@@ -154,11 +154,11 @@
     ctx.lineTo(w * 0.84, h * 0.36);
     ctx.lineTo(w * 0.68, h * 0.40);
     ctx.lineTo(w * 0.64, h * 0.56);
-    ctx.lineTo(w * 0.68, h * 0.68);
-    ctx.lineTo(w * 0.60, h * 0.68);
+    ctx.lineTo(w * 0.68, h * 0.96);
+    ctx.lineTo(w * 0.60, h * 0.96);
     ctx.lineTo(w * 0.60, h * 0.56);
-    ctx.lineTo(w * 0.48, h * 0.68);
-    ctx.lineTo(w * 0.40, h * 0.68);
+    ctx.lineTo(w * 0.48, h * 0.96);
+    ctx.lineTo(w * 0.40, h * 0.96);
     ctx.lineTo(w * 0.40, h * 0.52);
     ctx.closePath();
   }
@@ -173,11 +173,11 @@
     ctx.lineTo(w * 0.92, h * 0.56);
     ctx.lineTo(w * 0.84, h * 0.62);
     ctx.lineTo(w * 0.68, h * 0.58);
-    ctx.lineTo(w * 0.66, h * 0.78);
-    ctx.lineTo(w * 0.56, h * 0.78);
+    ctx.lineTo(w * 0.66, h * 0.96);
+    ctx.lineTo(w * 0.56, h * 0.96);
     ctx.lineTo(w * 0.56, h * 0.60);
-    ctx.lineTo(w * 0.42, h * 0.78);
-    ctx.lineTo(w * 0.32, h * 0.78);
+    ctx.lineTo(w * 0.42, h * 0.96);
+    ctx.lineTo(w * 0.32, h * 0.96);
     ctx.lineTo(w * 0.32, h * 0.60);
     ctx.closePath();
   }
