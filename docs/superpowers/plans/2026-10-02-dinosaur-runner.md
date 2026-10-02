@@ -735,7 +735,7 @@ git commit -m "feat: step 整合与死亡判定"
   function onKeyDown(e) {
     if (e.code === 'Space' || e.code === 'ArrowUp') {
       e.preventDefault();
-      if (state.gameOver) { restart(); return; }
+      if (state.gameOver) { if (!e.repeat) restart(); return; }
       if (!e.repeat) input.jump = true;
     } else if (e.code === 'ArrowDown') {
       e.preventDefault();
