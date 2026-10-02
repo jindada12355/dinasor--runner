@@ -61,3 +61,14 @@ test('updateScore：分数随距离累加', () => {
   assert.equal(s.distance, 25);
   assert.equal(s.score, 2); // floor(25 / 10)
 });
+
+test('maybeSpawnObstacle：障碍物间隔随距离缩短', () => {
+  const low = fresh();
+  low.spawnTimer = 1;
+  GameCore.maybeSpawnObstacle(low, () => 0.5); // distance=0 → gapScale=1
+  const high = fresh();
+  high.spawnTimer = 1;
+  high.distance = 20000;
+  GameCore.maybeSpawnObstacle(high, () => 0.5); // distance=20000 → gapScale=0.5
+  assert.ok(high.spawnTimer < low.spawnTimer);
+});
